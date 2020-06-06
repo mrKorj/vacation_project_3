@@ -1,0 +1,27 @@
+{
+  "name": "vacation_project_3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.ts",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.3",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/express-jwt": "0.0.42",
+    "concurrently": "^5.2.0",
+    "ts-node": "^8.10.1",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.9.2"
+  },
+  "scripts": {
+    "server": "ts-node-dev --watch -- src/server.ts",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "Kremenchugsky Sergy <mr.korj@gmail.com>",
+  "license": "ISC"
+}
