@@ -20,6 +20,13 @@ router.get('/', async (req, res) => {
 //--------- toggle follow vacation
 router.put('/', async (req, res) => {
     try {
+        // @ts-ignore
+        const {userName} = req.user  // from express-jwt middleware
+        if (userName === 'admin') {
+            res.status(400).send({message: `user '${userName}' doesn't have permission`})
+            return
+        }
+
         const {userId, vacationId} = req.body
         const followId = await markFollow(userId, vacationId)
         res.send({message: 'toggle successes', followId})
@@ -33,6 +40,14 @@ router.put('/', async (req, res) => {
 router.post('/', async (req, res) => {
 
     try {
+        // @ts-ignore
+        const {userName} = req.user // from express-jwt middleware
+        if (userName !== 'admin') {
+            console.log(userName)
+            res.status(400).send({message: `user '${userName}' doesn't have permission`})
+            return
+        }
+
         const {name, description, beginDate, expDate, picUrl, price}: IVacation = req.body
         const {error} = vacationSchema.validate({name, description, beginDate, expDate, picUrl, price})
         if (error) {
@@ -51,6 +66,13 @@ router.post('/', async (req, res) => {
 router.put('/edit', async (req, res) => {
 
     try {
+        // @ts-ignore
+        const {userName} = req.user // from express-jwt middleware
+        if (userName !== 'admin') {
+            res.status(400).send({message: `user '${userName}' doesn't have permission`})
+            return
+        }
+
         const {id, name, description, beginDate, expDate, picUrl, price}: IVacation = req.body
         const {error} = vacationSchema.validate({name, description, beginDate, expDate, picUrl, price})
         if (error) {
@@ -67,6 +89,13 @@ router.put('/edit', async (req, res) => {
 //---------- delete vacation
 router.delete('/', async (req, res) => {
     try {
+        // @ts-ignore
+        const {userName} = req.user // from express-jwt middleware
+        if (userName !== 'admin') {
+            res.status(400).send({message: `user '${userName}' doesn't have permission`})
+            return
+        }
+
         const {id} = req.body
         const result = await deleteVacation(id)
         res.send({message: 'vacation deleted successfully', result})

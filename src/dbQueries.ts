@@ -31,13 +31,23 @@ export async function getVacation(): Promise<any> {
 
 //----- follow vacation
 export async function markFollow(userId: number, vacationId: number): Promise<boolean> {
-    const [followId]: any[] = await appDb.execute('select id from follow where userId = ? and vacationId = ?', [userId, vacationId])
+    const [followId]: any[] = await appDb.execute('SELECT id from follow WHERE userId = ? AND vacationId = ?', [userId, vacationId])
 
     if (followId.length) {
-        const [result]: any = await appDb.execute('update follow set follow = NOT follow where vacationId = ? and userId = ?', [vacationId, userId])
+        const [result]: any = await appDb.execute('UPDATE follow SET follow = NOT follow WHERE vacationId = ? and userId = ?', [vacationId, userId])
+        const [res]: any= await appDb.execute('SELECT follow FROM follow WHERE vacationId = ? AND userId = ?', [vacationId, userId])
+
+        const val = res[0].follow
+        if (val) {
+            await appDb.execute('UPDATE vacations SET countFollowers = countFollowers + 1 WHERE id = ?', [vacationId])
+        } else {
+            await appDb.execute('UPDATE vacations SET countFollowers = countFollowers - 1 WHERE id = ?', [vacationId])
+        }
+
         return result.affectedRows > 0
     } else {
         const [{insertId}]: any = await appDb.execute('INSERT INTO follow (vacationId, userId, follow) VALUES (?, ?, true)', [vacationId, userId])
+        await appDb.execute('UPDATE vacations SET countFollowers = countFollowers + 1 WHERE id = ?', [vacationId])
         return insertId
     }
 }

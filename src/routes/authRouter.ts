@@ -10,7 +10,9 @@ const router = Router()
 //----- register new user
 router.post('/register', async (req, res) => {
     try {
-        const {userName, firstName, lastName, password} = req.body
+        // TODO: userName declaration !!!
+        let {userName, firstName, lastName, password} = req.body
+        userName = userName.toLowerCase()
         const {error} = userSchema.validate({userName, firstName, lastName, password})
 
         if (error) {
@@ -26,7 +28,7 @@ router.post('/register', async (req, res) => {
         }
 
         const userId = await addUser({userName, firstName, lastName, password} as IUser)
-        const token = Jwt.sign({userName, userId}, SECRET, {expiresIn: '1h'})
+        const token = Jwt.sign({userName, userId}, SECRET)
 
         res.send({userId, token, message: `Welcome ${userName}`})
     } catch (e) {
@@ -38,7 +40,9 @@ router.post('/register', async (req, res) => {
 //--------- logIn
 router.post('/login', async (req, res) => {
     try {
-        const {userName, password} = req.body
+        // TODO: userName declaration !!!
+        let {userName, password} = req.body
+        userName = userName.toLowerCase()
         const userId = await logIn({userName, password} as IUser)
 
         if (!userId.length) {
@@ -46,7 +50,7 @@ router.post('/login', async (req, res) => {
             return
         }
 
-        const token = Jwt.sign({userName, userId}, SECRET, {expiresIn: '1h'})
+        const token = Jwt.sign({userName, userId}, SECRET)
         res.send({token, userName, message: `Welcome ${userName}`});
     } catch (e) {
         res.status(500).send(e)
