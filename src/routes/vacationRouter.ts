@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import {addVacation, deleteVacation, editVacation, getVacation, markFollow} from "../dbQueries"
-import {IVacation} from "../models/vacation";
+import {IVacation} from "../models/vacationModel";
 import {vacationSchema} from "../schemas/vacationSchema";
 
 const router = Router()
@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
         const {name, description, beginDate, expDate, picUrl, price}: IVacation = req.body
         const {error} = vacationSchema.validate({name, description, beginDate, expDate, picUrl, price})
         if (error) {
-            res.status(400).send(error)
+            res.status(400).send(error.details[0].message)
             return
         }
         const vacationId = await addVacation({name, description, beginDate, expDate, picUrl, price} as IVacation)
@@ -54,7 +54,7 @@ router.put('/edit', async (req, res) => {
         const {id, name, description, beginDate, expDate, picUrl, price}: IVacation = req.body
         const {error} = vacationSchema.validate({name, description, beginDate, expDate, picUrl, price})
         if (error) {
-            res.status(400).send(error)
+            res.status(400).send(error.details[0].message)
             return
         }
         const vacationUpdate = await editVacation({id, name, description, beginDate, expDate, picUrl, price} as IVacation)

@@ -7,6 +7,7 @@ CREATE TABLE users (
     firstName VARCHAR(20) NOT NULL,
     lastName VARCHAR(20) NOT NULL,
     password VARCHAR(30) NOT NULL,
+    registrationDate DATETIME NOT NULL DEFAULT now(),
     PRIMARY KEY (id),
     INDEX userName (userName)
 );
@@ -21,7 +22,8 @@ CREATE TABLE vacations (
     price INT NOT NULL,
     countFollowers INT NOT NULL DEFAULT 0,
     likes INT NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    INDEX id (id)
 );
 
 CREATE TABLE follow (
@@ -31,15 +33,8 @@ CREATE TABLE follow (
     follow TINYINT DEFAULT FALSE,
     PRIMARY KEY (id),
     INDEX userId (userId),
-    INDEX vacationId (vacationId),
+    INDEX vacationId (vacationId)
 );
 
-CREATE TABLE administrators (
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(20) NOT NULL,
-    password VARCHAR(20) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-INSERT INTO administrators (name, password)
-VALUES ('admin', '1234'), ('chen', '12345'); 
+INSERT INTO users (userName, firstName, lastName, password)
+VALUES ('admin', 'administrator', 'supervisor', '1234');

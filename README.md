@@ -1,9 +1,12 @@
 # Vacation App
-This is learn project for Full Stack Course.
+This is learning project for Full Stack Course.
 
 ## Instructions
+The server requires env variable SECRET.
 
 * Type `npm i`.
+* Windows: `SET SECRET=your-secret`.
+* Linux/Mac: `EXPORT SECRET=your-secret`.
 * Type `npm run dev` to start both server and client.
 * Enjoy!
 
