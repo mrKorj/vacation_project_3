@@ -6,7 +6,7 @@ CREATE TABLE users (
     userName VARCHAR(20) NOT NULL,
     firstName VARCHAR(20) NOT NULL,
     lastName VARCHAR(20) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    password VARCHAR(100) NOT NULL,
     registrationDate DATETIME NOT NULL DEFAULT now(),
     PRIMARY KEY (id),
     INDEX userName (userName)
@@ -37,4 +37,4 @@ CREATE TABLE follow (
 );
 
 INSERT INTO users (userName, firstName, lastName, password)
-VALUES ('admin', 'administrator', 'supervisor', '1234');
+VALUES ('admin', 'administrator', 'supervisor', '');

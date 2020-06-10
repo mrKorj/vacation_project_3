@@ -1,9 +1,9 @@
 import {Router} from 'express'
-import {addUser, checkUserExists, logIn} from "../dbQueries"
+import {addUser, checkUserExists, logIn} from "../db/dbQueries"
 import {IUser} from "../models/userModel"
-import {userSchema} from "../schemas/userSchema"
+import {logInSchema, newUserSchema} from "../schemas/userSchema"
 import Jwt from 'jsonwebtoken'
-import {SECRET} from '../secret'
+import {SECRET} from '../server'
 
 const router = Router()
 
@@ -13,7 +13,7 @@ router.post('/register', async (req, res) => {
         // TODO: userName declaration !!!
         let {userName, firstName, lastName, password} = req.body
         userName = userName.toLowerCase()
-        const {error} = userSchema.validate({userName, firstName, lastName, password})
+        const {error} = newUserSchema.validate({userName, firstName, lastName, password})
 
         if (error) {
             res.status(400).send(error.details[0].message)
@@ -43,9 +43,16 @@ router.post('/login', async (req, res) => {
         // TODO: userName declaration !!!
         let {userName, password} = req.body
         userName = userName.toLowerCase()
+        const {error} = logInSchema.validate({userName, password})
+
+        if (error) {
+            res.status(400).send(error.details[0].message)
+            return
+        }
+
         const userId = await logIn({userName, password} as IUser)
 
-        if (!userId.length) {
+        if (!userId) {
             res.status(401).send({message: 'Username and password don\'t match.'})
             return
         }

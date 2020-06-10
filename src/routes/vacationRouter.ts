@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {addVacation, deleteVacation, editVacation, getVacation, markFollow} from "../dbQueries"
+import {addVacation, deleteVacation, editVacation, getVacation, markFollow} from "../db/dbQueries"
 import {IVacation} from "../models/vacationModel";
 import {vacationSchema} from "../schemas/vacationSchema";
 
@@ -48,13 +48,13 @@ router.post('/', async (req, res) => {
             return
         }
 
-        const {name, description, beginDate, expDate, picUrl, price}: IVacation = req.body
-        const {error} = vacationSchema.validate({name, description, beginDate, expDate, picUrl, price})
+        const {name, description, fromDate, toDate, picUrl, price}: IVacation = req.body
+        const {error} = vacationSchema.validate({name, description, fromDate, toDate, picUrl, price})
         if (error) {
             res.status(400).send(error.details[0].message)
             return
         }
-        const vacationId = await addVacation({name, description, beginDate, expDate, picUrl, price} as IVacation)
+        const vacationId = await addVacation({name, description, fromDate, toDate, picUrl, price} as IVacation)
         res.send({message: 'vacation add successfully', vacationId})
     } catch (e) {
         res.status(500).send(e)
@@ -73,13 +73,13 @@ router.put('/edit', async (req, res) => {
             return
         }
 
-        const {id, name, description, beginDate, expDate, picUrl, price}: IVacation = req.body
-        const {error} = vacationSchema.validate({name, description, beginDate, expDate, picUrl, price})
+        const {id, name, description, fromDate, toDate, picUrl, price}: IVacation = req.body
+        const {error} = vacationSchema.validate({name, description, fromDate, toDate, picUrl, price})
         if (error) {
             res.status(400).send(error.details[0].message)
             return
         }
-        const vacationUpdate = await editVacation({id, name, description, beginDate, expDate, picUrl, price} as IVacation)
+        const vacationUpdate = await editVacation({id, name, description, fromDate, toDate, picUrl, price} as IVacation)
         res.send({message: 'vacation updated successfully', vacationUpdate})
     } catch (e) {
         res.status(500).send(e)
