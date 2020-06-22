@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {addVacation, deleteVacation, editVacation, getVacation, markFollow} from "../db/dbQueries"
+import {addVacation, deleteVacation, editVacation, getVacation, likeVacation, markFollow} from "../db/dbQueries"
 import {IVacation} from "../models/vacationModel";
 import {vacationSchema} from "../schemas/vacationSchema";
 
@@ -10,7 +10,7 @@ const router = Router()
 router.get('/', async (req, res) => {
     try {
         const vacations = await getVacation()
-        res.send({vacations});
+        res.send(vacations);
     } catch (e) {
         res.status(500).send(e)
     }
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 })
 
 //--------- toggle follow vacation
-router.put('/', async (req, res) => {
+router.put('/follow', async (req, res) => {
     try {
         // @ts-ignore
         const {userName} = req.user  // from express-jwt middleware
@@ -37,7 +37,7 @@ router.put('/', async (req, res) => {
 })
 
 //--------- add vacation
-router.post('/', async (req, res) => {
+router.post('/add', async (req, res) => {
 
     try {
         // @ts-ignore
@@ -87,7 +87,7 @@ router.put('/edit', async (req, res) => {
 })
 
 //---------- delete vacation
-router.delete('/', async (req, res) => {
+router.delete('/delete', async (req, res) => {
     try {
         // @ts-ignore
         const {userName} = req.user // from express-jwt middleware
@@ -99,6 +99,24 @@ router.delete('/', async (req, res) => {
         const {id} = req.body
         const result = await deleteVacation(id)
         res.send({message: 'vacation deleted successfully', result})
+    } catch (e) {
+        res.status(500).send(e)
+    }
+})
+
+//--------- like vacation
+router.put('/like', async (req, res) => {
+    try {
+        // @ts-ignore
+        const {userName} = req.user  // from express-jwt middleware
+        if (userName === 'admin') {
+            res.status(400).send({message: `user '${userName}' doesn't have permission`})
+            return
+        }
+
+        const {vacationId} = req.body
+        await likeVacation(vacationId)
+        res.send({message: 'like successes'})
     } catch (e) {
         res.status(500).send(e)
     }

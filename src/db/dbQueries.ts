@@ -2,7 +2,7 @@ import {appDb} from './appDb'
 import {hash, compare} from 'bcrypt'
 import {IVacation} from "../models/vacationModel"
 import {IUser} from "../models/userModel"
-import { adminPassword } from '../server'
+import {adminPassword} from '../server'
 
 //----------------------------------- user queries --------------------------------------------------
 export async function generateHashPassForAdmin() {
@@ -11,20 +11,20 @@ export async function generateHashPassForAdmin() {
 }
 
 //------- check user exist
-export async function checkUserExists(userName: IUser):Promise<any> {
+export async function checkUserExists(userName: IUser): Promise<any> {
     const [userId] = await appDb.execute('SELECT id FROM users WHERE userName = ?', [userName])
     return userId
 }
 
 //-------- add new user
-export async function addUser({userName, firstName, lastName, password}:IUser): Promise<number> {
+export async function addUser({userName, firstName, lastName, password}: IUser): Promise<number> {
     const hashedPassword = await hash(password, 10)
     const [{insertId}]: any = await appDb.execute('INSERT INTO users (userName, firstName, lastName, password) VALUES (?,?,?,?)', [userName, firstName, lastName, hashedPassword])
     return insertId
 }
 
 //-------- logIn
-export async function logIn({userName, password}: IUser):Promise<number | null> {
+export async function logIn({userName, password}: IUser): Promise<number | null> {
     const [users]: any[] = await appDb.execute('SELECT id, password FROM users WHERE userName = ?', [userName])
 
     if (users.length === 0) {
@@ -76,8 +76,14 @@ export async function editVacation({id, name, description, fromDate, toDate, pic
 }
 
 //---- delete vacation
-export async function deleteVacation(id: IVacation):Promise<boolean[]> {
+export async function deleteVacation(id: IVacation): Promise<boolean[]> {
     const [result]: any = await appDb.execute('DELETE FROM vacations WHERE id = ?', [id])
     const [result2]: any = await appDb.execute('DELETE FROM follow WHERE vacationId = ?', [id])
     return [result.affectedRows > 0, result2.affectedRows > 0]
+}
+
+//------ Like vacation
+export async function likeVacation(id: IVacation): Promise<boolean> {
+    const [result]: any = await appDb.execute('UPDATE vacations SET likes = likes + 1 WHERE id = ?', [id])
+    return result.affectedRows > 0
 }

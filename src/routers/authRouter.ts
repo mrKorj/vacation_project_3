@@ -16,7 +16,8 @@ router.post('/register', async (req, res) => {
         const {error} = newUserSchema.validate({userName, firstName, lastName, password})
 
         if (error) {
-            res.status(400).send(error.details[0].message)
+            const message = error.details[0].message
+            res.status(400).send({message})
             return
         }
 
@@ -46,7 +47,8 @@ router.post('/login', async (req, res) => {
         const {error} = logInSchema.validate({userName, password})
 
         if (error) {
-            res.status(400).send(error.details[0].message)
+            const message = error.details[0].message
+            res.status(400).send({message})
             return
         }
 

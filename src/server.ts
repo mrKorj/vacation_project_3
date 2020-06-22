@@ -2,8 +2,8 @@ import express from 'express'
 import expressJwt from 'express-jwt'
 import socketIo from 'socket.io'
 import http from 'http'
-import {vacationRouter} from "./routes/vacationRouter"
-import {authRouter} from "./routes/authRouter"
+import {vacationRouter} from "./routers/vacationRouter"
+import {authRouter} from "./routers/authRouter"
 
 import {generateHashPassForAdmin} from "./db/dbQueries";
 
@@ -17,9 +17,9 @@ const server = http.createServer(app)
 const io = socketIo(server)
 
 io.on('connection', (socket) => {
-    console.log('IO connect')
+    console.log('IO connected')
     socket.on('disconnect', () => {
-        console.log('IO disconnect')
+        console.log('IO disconnected')
     })
 })
 
