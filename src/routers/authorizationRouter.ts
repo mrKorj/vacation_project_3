@@ -11,7 +11,7 @@ const router = Router()
 router.post('/register', async (req, res) => {
     try {
         // TODO: userName declaration !!!
-        let {userName, firstName, lastName, password} = req.body
+        let {userName, firstName, lastName, password} = req.body as IUser
         userName = userName.toLowerCase()
         const {error} = newUserSchema.validate({userName, firstName, lastName, password})
 
@@ -29,9 +29,9 @@ router.post('/register', async (req, res) => {
         }
 
         const userId = await addUser({userName, firstName, lastName, password} as IUser)
-        const token = Jwt.sign({userName, userId}, SECRET)
+        const token = Jwt.sign({userName, userId}, SECRET, {expiresIn: 60 * 60})
 
-        res.send({userId, token, message: `Welcome ${userName}`})
+        res.send({userId, userRole: 'registeredUser', userName, token, message: `Welcome ${userName}`})
     } catch (e) {
         res.status(500).send(e)
     }
@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         // TODO: userName declaration !!!
-        let {userName, password} = req.body
+        let {userName, password} = req.body as IUser
         userName = userName.toLowerCase()
         const {error} = logInSchema.validate({userName, password})
 
@@ -58,9 +58,14 @@ router.post('/login', async (req, res) => {
             res.status(401).send({message: 'Username and password don\'t match.'})
             return
         }
+        const token = Jwt.sign({userName, userId}, SECRET, {expiresIn: 60 * 60})
 
-        const token = Jwt.sign({userName, userId}, SECRET)
-        res.send({token, userName, message: `Welcome ${userName}`});
+        if (userName === 'admin') {
+            res.send({userRole: 'admin', token, userName, message: `Welcome ${userName}`})
+            return
+        }
+
+        res.send({userId, userRole: 'registeredUser', token, userName, message: `Welcome ${userName}`});
     } catch (e) {
         res.status(500).send(e)
     }
@@ -68,4 +73,4 @@ router.post('/login', async (req, res) => {
 })
 
 
-export {router as authRouter}
+export {router as authorizationRouter}

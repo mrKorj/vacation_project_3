@@ -8,26 +8,30 @@ const router = Router()
 
 // -------- get all vacations
 router.get('/', async (req, res) => {
+    const {userId} = (req as any).user // from express-jwt middleware
+    const io = (req as any).io
     try {
-        const vacations = await getVacation()
+        const vacations = await getVacation(userId)
+
+        io.sockets.emit('send_v', vacations)
+
         res.send(vacations);
     } catch (e) {
         res.status(500).send(e)
     }
-
 })
 
 //--------- toggle follow vacation
 router.put('/follow', async (req, res) => {
     try {
-        // @ts-ignore
-        const {userName} = req.user  // from express-jwt middleware
+        const {userName, userId} = (req as any).user  // from express-jwt middleware
         if (userName === 'admin') {
             res.status(400).send({message: `user '${userName}' doesn't have permission`})
             return
         }
 
-        const {userId, vacationId} = req.body
+        const {vacationId} = req.body
+
         const followId = await markFollow(userId, vacationId)
         res.send({message: 'toggle successes', followId})
     } catch (e) {
@@ -37,25 +41,59 @@ router.put('/follow', async (req, res) => {
 })
 
 //--------- add vacation
-router.post('/add', async (req, res) => {
+router.post('/add', (req, res) => {
 
     try {
-        // @ts-ignore
-        const {userName} = req.user // from express-jwt middleware
+        const {userName} = (req as any).user // from express-jwt middleware
         if (userName !== 'admin') {
-            console.log(userName)
             res.status(400).send({message: `user '${userName}' doesn't have permission`})
             return
         }
 
-        const {name, description, fromDate, toDate, picUrl, price}: IVacation = req.body
-        const {error} = vacationSchema.validate({name, description, fromDate, toDate, picUrl, price})
-        if (error) {
-            res.status(400).send(error.details[0].message)
-            return
+        const {form} = req.body
+        const {name, description, fromDate, toDate, price}: IVacation = JSON.parse(form)
+
+        if (!req.files) {
+            return res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
         }
-        const vacationId = await addVacation({name, description, fromDate, toDate, picUrl, price} as IVacation)
-        res.send({message: 'vacation add successfully', vacationId})
+
+        let sampleFile = req.files.sampleFile
+
+        // @ts-ignore
+        sampleFile.mv('./upload/' + sampleFile.name, async function (err) {
+            if (err) {
+                return res.status(500).send({err, message: 'mv file error'})
+            }
+
+            // @ts-ignore
+            const picUrl = `./upload/${sampleFile.name}`
+
+            const {error} = vacationSchema.validate({name, description, fromDate, toDate, picUrl, price})
+            if (error) {
+                res.status(400).send(error.details[0].message)
+                console.log(error.details[0].message)
+                return
+            }
+            const newVacation = await addVacation({name, description, fromDate, toDate, picUrl, price} as IVacation)
+            res.send({message: 'vacation add successfully', newVacation})
+
+            // res.send({
+            //     status: true,
+            //     message: 'File is uploaded',
+            //     data: {
+            //         // @ts-ignore
+            //         name: sampleFile.name,
+            //         // @ts-ignore
+            //         mimetype: sampleFile.mimetype,
+            //         // @ts-ignore
+            //         size: sampleFile.size
+            //     }
+            // })
+        })
+
     } catch (e) {
         res.status(500).send(e)
     }
@@ -66,8 +104,7 @@ router.post('/add', async (req, res) => {
 router.put('/edit', async (req, res) => {
 
     try {
-        // @ts-ignore
-        const {userName} = req.user // from express-jwt middleware
+        const {userName} = (req as any).user // from express-jwt middleware
         if (userName !== 'admin') {
             res.status(400).send({message: `user '${userName}' doesn't have permission`})
             return
@@ -89,15 +126,14 @@ router.put('/edit', async (req, res) => {
 //---------- delete vacation
 router.delete('/delete', async (req, res) => {
     try {
-        // @ts-ignore
-        const {userName} = req.user // from express-jwt middleware
+        const {userName} = (req as any).user // from express-jwt middleware
         if (userName !== 'admin') {
             res.status(400).send({message: `user '${userName}' doesn't have permission`})
             return
         }
 
-        const {id} = req.body
-        const result = await deleteVacation(id)
+        const {vacationId} = req.body
+        const result = await deleteVacation(vacationId)
         res.send({message: 'vacation deleted successfully', result})
     } catch (e) {
         res.status(500).send(e)
@@ -107,8 +143,7 @@ router.delete('/delete', async (req, res) => {
 //--------- like vacation
 router.put('/like', async (req, res) => {
     try {
-        // @ts-ignore
-        const {userName} = req.user  // from express-jwt middleware
+        const {userName} = (req as any).user  // from express-jwt middleware
         if (userName === 'admin') {
             res.status(400).send({message: `user '${userName}' doesn't have permission`})
             return

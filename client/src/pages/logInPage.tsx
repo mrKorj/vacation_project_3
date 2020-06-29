@@ -1,8 +1,9 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom";
 import {appContext} from "../App";
-import {LogIn} from "../reducers/actions";
-import {ActionType} from "../reducers/reduser";
+import {LogInAction} from "../reducers/authActions";
+import {ActionType} from "../reducers/reducer";
+import {LoadingSpinner} from "../components/LoadingSpinner";
 
 
 interface ILogIn {
@@ -16,7 +17,11 @@ export const LogInPage: React.FC = () => {
     const [form, setForm] = useState<ILogIn>({userName: '', password: ''})
     const {state, dispatch} = useContext(appContext)
 
-    useEffect(()=> {
+    const formHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({...form, [event.target.name]: event.target.value})
+    }
+
+    useEffect(() => {
         if (state.message?.length) {
             alert(state.message)
         }
@@ -29,23 +34,20 @@ export const LogInPage: React.FC = () => {
         return <Redirect to='/'/>
     }
 
+    if (state.isLoading) {
+        return <LoadingSpinner/>
+    }
+
     const logInHandler = async (event: React.FormEvent) => {
         event.preventDefault()
-        await LogIn({...form}, dispatch)
-
-
+        await LogInAction({...form}, dispatch)
     }
-
-    const formHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({...form, [event.target.name]: event.target.value})
-    }
-
 
     return (
-        <div className="text-center">
+        <div className="text-center container">
             <form className="form-signin" onSubmit={logInHandler}>
-                <img className="mb-4" src="img/VLogo.png" alt="logo"
-                     width="72" height="72"/>
+                <img className="mb-1" src="img/vacation.png" alt="logo"
+                     width="250" height="250"/>
                 <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
                 <label htmlFor="inputUserName" className="sr-only">User name</label>
                 <input type="text" name="userName"
@@ -68,13 +70,11 @@ export const LogInPage: React.FC = () => {
                        onChange={formHandler}/>
                 <div className="checkbox mb-3 mt-3">
                     <label>
-                        <Link to='/register'> New user ? Registration.</Link>
+                        <Link to='/register'>New user? Registration</Link>
                     </label>
                 </div>
                 <button className="btn btn-lg btn-primary btn-block" type="submit" disabled={state.isLoading}>
-                    {state.isLoading
-                        ? <span className="spinner-border spinner-border" role="status" aria-hidden="true"/>
-                        : "Sign in"}
+                    Sign in
                 </button>
                 <p className="mt-5 mb-3 text-muted">© Sergey Kremenchugsky 2020</p>
             </form>

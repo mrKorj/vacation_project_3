@@ -11,7 +11,7 @@ export async function generateHashPassForAdmin() {
 }
 
 //------- check user exist
-export async function checkUserExists(userName: IUser): Promise<any> {
+export async function checkUserExists(userName: string): Promise<any> {
     const [userId] = await appDb.execute('SELECT id FROM users WHERE userName = ?', [userName])
     return userId
 }
@@ -40,10 +40,15 @@ export async function logIn({userName, password}: IUser): Promise<number | null>
 }
 
 //------------------------------------ vacation queries ---------------------------------------
+// select *, ____ from V left join F on V.id = F.vacationId where F.userId = userId
+//           if(userId > o , true, false) as isFollowing
+
 //---- get list of all vacations
-export async function getVacation(): Promise<any> {
-    const [rows] = await appDb.execute('SELECT * FROM vacations')
-    return rows
+export async function getVacation(userId: number): Promise<any> {
+    const [followVacations]: any[] = await appDb.execute('SELECT vacations.*, follow FROM vacations LEFT JOIN  follow on vacations.id = follow.vacationId WHERE userId = ?', [userId])
+    const [vacations]: any[] = await appDb.execute('SELECT *, 0 as follow FROM vacations')
+    const filteredVacations = vacations.filter((v: IVacation) => !followVacations.find((vf: IVacation) => v.id === vf.id))
+    return followVacations.concat(filteredVacations)
 }
 
 //----- follow vacation
@@ -64,14 +69,15 @@ export async function markFollow(userId: number, vacationId: number): Promise<bo
 //---- add new vacation
 export async function addVacation({name, description, fromDate, toDate, picUrl, price}: IVacation): Promise<number> {
     const [{insertId}]: any = await appDb
-        .execute('INSERT INTO vacations (name, descript, fromDate, toDate, pictureUrl, price) VALUES (?,?,?,?,?,?)', [name, description, fromDate, toDate, picUrl, price])
-    return insertId
+        .execute('INSERT INTO vacations (name, description, fromDate, toDate, pictureUrl, price) VALUES (?,?,?,?,?,?)', [name, description, fromDate, toDate, picUrl, price])
+    const [newVacation]: any = await  appDb.execute('SELECT * FROM vacations WHERE id = ?', [insertId])
+    return newVacation
 }
 
 //----- edit vacation
 export async function editVacation({id, name, description, fromDate, toDate, picUrl, price}: IVacation): Promise<boolean> {
     const [result]: any = await appDb
-        .execute('UPDATE vacations SET name = ?, descript = ?, fromDate = ?, toDate = ?, pictureUrl = ?, price = ? WHERE id = ?', [name, description, fromDate, toDate, picUrl, price, id])
+        .execute('UPDATE vacations SET name = ?, description = ?, fromDate = ?, toDate = ?, pictureUrl = ?, price = ? WHERE id = ?', [name, description, fromDate, toDate, picUrl, price, id])
     return result.affectedRows > 0
 }
 

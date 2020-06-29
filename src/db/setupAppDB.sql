@@ -15,7 +15,7 @@ CREATE TABLE users (
 CREATE TABLE vacations (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
-    descript VARCHAR(200) NOT NULL,
+    description VARCHAR(200) NOT NULL,
     fromDate DATE NOT NULL,
     toDate DATE NOT NULL,
     pictureUrl VARCHAR(50) NOT NULL,

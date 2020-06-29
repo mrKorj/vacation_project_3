@@ -1,4 +1,4 @@
-# Vacation App
+# VacationCard App
 This is learning project for Full Stack Course.
 
 ## Instructions

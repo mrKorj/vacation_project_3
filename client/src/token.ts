@@ -1,11 +1,11 @@
 export function saveToken(token: string): void {
-    localStorage.setItem('userData', JSON.stringify({token}))
+    localStorage.setItem('token', JSON.stringify(token))
 }
 
 export function getToken(): string | null {
-    return JSON.parse(localStorage.getItem('userData') as string) || null
+    return JSON.parse(localStorage.getItem('token') as string) || null
 }
 
 export function clearToken(): void {
-    localStorage.removeItem('userData');
+    localStorage.removeItem('token');
 }

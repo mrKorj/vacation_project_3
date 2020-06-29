@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import {appContext} from "../App";
-import {Register} from "../reducers/actions";
+import {RegisterAction} from "../reducers/authActions";
 import {Link, Redirect} from "react-router-dom";
-import {ActionType} from "../reducers/reduser";
+import {ActionType} from "../reducers/reducer";
 
 
 interface IRegister {
@@ -31,7 +31,7 @@ export const RegisterPage: React.FC = () => {
 
     const onSubmitHandler = async (event: React.FormEvent) => {
         event.preventDefault()
-        await Register({...form}, dispatch)
+        await RegisterAction({...form}, dispatch)
     }
 
     const formHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,10 +39,10 @@ export const RegisterPage: React.FC = () => {
     }
 
     return (
-        <div className="text-center">
+        <div className="text-center container">
             <form className="form-signin" onSubmit={onSubmitHandler}>
-                <img className="mb-4" src="img/VLogo.png" alt="logo"
-                     width="72" height="72"/>
+                <img className="mb-1" src="img/vacation.png" alt="logo"
+                     width="250" height="250"/>
                 <h1 className="h3 mb-3 font-weight-normal">Registration form</h1>
 
                 <label htmlFor="inputName" className="sr-only">Name</label>

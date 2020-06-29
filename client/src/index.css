@@ -14,3 +14,42 @@ body {
     /*border-top-left-radius: 0;*/
     /*border-top-right-radius: 0;*/
 }
+
+.text-muted {
+    color: #6c757d!important;
+}
+footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    background-color: white;
+}
+
+.m-10 {
+    margin: 10rem;
+}
+.m-20 {
+    margin: 20rem;
+}
+.mt-7 {
+    margin-top: 5rem;
+}
+.loading {
+    width: 800px;
+    height: 100%;
+}
+
+.follow-card {
+    background: radial-gradient(circle, #f8f9fa, #dff1ff);
+    /*background-color: #ffc1070f;*/
+    /*border: 1px solid #007bff;*/
+    /*border-top: none;*/
+    /*border-radius: 3px;*/
+}
+.bg-nav{
+    background-color: #e3f2fd;
+}
+/*#ede7f6*/
+/*#17a2b829*/
+.formModal {
+    width: 90%;
+}
