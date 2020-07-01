@@ -5,13 +5,13 @@ import {getToken} from "../token";
 const SERVER_URL = '/api/'
 
 export const addVacationAction = async (dispatch: Dispatch<IAction>, {...form}) => {
-    // dispatch({
-    //     type: ActionType.Loading
-    // })
+    dispatch({
+        type: ActionType.UploadingData
+    })
 
     const token = getToken()
     const formData = new FormData()
-    formData.append('sampleFile', form.sampleFile as any )
+    formData.append('sampleFile', form.sampleFile as any)
     formData.append('form', JSON.stringify(form))
 
     try {
@@ -23,9 +23,24 @@ export const addVacationAction = async (dispatch: Dispatch<IAction>, {...form}) 
             body: formData
         })
 
-
         const data = await response.json()
         const {message, newVacation} = data
+
+        if (response.status >= 400) {
+            dispatch({
+                type: ActionType.Message,
+                payload: message
+            })
+            dispatch({
+                type: ActionType.UploadingDataEnd
+            })
+            return
+        }
+
+        dispatch({
+            type: ActionType.Message,
+            payload: message
+        })
 
         dispatch({
             type: ActionType.AddVacation,
@@ -33,17 +48,15 @@ export const addVacationAction = async (dispatch: Dispatch<IAction>, {...form}) 
         })
 
         dispatch({
-            type: ActionType.Message,
-            payload: message
+            type: ActionType.UploadingDataEnd
         })
-
-        // dispatch({
-        //     type: ActionType.LoadingEnd
-        // })
     } catch (e) {
         dispatch({
             type: ActionType.Message,
             payload: e
+        })
+        dispatch({
+            type: ActionType.UploadingDataEnd
         })
     }
 }
@@ -79,6 +92,57 @@ export const getVacationsAction = async (dispatch: Dispatch<IAction>) => {
         dispatch({
             type: ActionType.LoadingEnd
         })
+        dispatch({
+            type: ActionType.Message,
+            payload: e
+        })
+    }
+}
+
+export const editVacationAction = async (dispatch: Dispatch<IAction>, {...form}) => {
+    dispatch({
+        type: ActionType.UploadingData
+    })
+
+    const token = getToken()
+
+    try {
+        const response = await fetch(`${SERVER_URL}edit`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(form)
+        })
+        const data = await response.json()
+        const {message, editedVacation} = data
+
+        if (response.status >= 400) {
+            dispatch({
+                type: ActionType.Message,
+                payload: message
+            })
+            dispatch({
+                type: ActionType.UploadingDataEnd
+            })
+            return
+        }
+
+        dispatch({
+            type: ActionType.EditVacation,
+            payload: editedVacation
+        })
+
+        dispatch({
+            type: ActionType.Message,
+            payload: message
+        })
+
+        dispatch({
+            type: ActionType.UploadingDataEnd
+        })
+    } catch (e) {
         dispatch({
             type: ActionType.Message,
             payload: e
@@ -157,7 +221,7 @@ export const DeleteAction = async (dispatch: Dispatch<IAction>, vacationId: numb
         })
 
         dispatch({
-            type: ActionType.DeleteVacations,
+            type: ActionType.DeleteVacation,
             payload: vacationId as any
         })
 
@@ -167,4 +231,10 @@ export const DeleteAction = async (dispatch: Dispatch<IAction>, vacationId: numb
             payload: e
         })
     }
+}
+
+export const ChangeThemeAction = (dispatch: Dispatch<IAction>) => {
+    dispatch({
+        type: ActionType.ChangeTheme
+    })
 }

@@ -1,18 +1,19 @@
 import React, {useContext, useEffect} from "react";
 import {VacationCard} from "../components/VacationCard";
 import {appContext} from "../App";
-import {getVacationsAction} from "../reducers/appActions";
 import {Footer} from "../components/Footer";
 import {LoadingSpinner} from "../components/LoadingSpinner";
 import {NavBar} from "../components/NavBar";
 
 
 export const MainPage: React.FC = () => {
-    const {state, dispatch} = useContext(appContext)
+    const {state} = useContext(appContext)
 
     useEffect(() => {
-        getVacationsAction(dispatch)
-    }, [dispatch])
+        state.theme === 'light'
+            ? document.body.style.backgroundColor = "#f5f5f5"
+            : document.body.style.backgroundColor = "#2c2c54"
+    }, [state.theme])
 
     if (state.isLoading) {
         return <LoadingSpinner/>
@@ -28,6 +29,7 @@ export const MainPage: React.FC = () => {
                         : <h4 className="text-info mt-3">Follow your dreams...</h4>
 
                 }
+                {/*{state.message ? <Message/> : null}*/}
                 <div className='row mt-3'>
                     {
                         state.vacations.map(vacationCard => {

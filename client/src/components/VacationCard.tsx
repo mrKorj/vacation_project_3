@@ -1,21 +1,12 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {appContext} from "../App";
 import {IVacation} from "../reducers/reducer";
 import {DeleteAction, followAction, likeAction} from "../reducers/appActions";
+import {EditForm} from "./EditForm";
 
 export const VacationCard: React.FC<IVacation> = ({...vacation}) => {
     const {dispatch, state} = useContext(appContext)
-    // console.log(state)
-    const style = vacation.follow ? 'card-body follow-card' : 'card-body'
-
-    // useEffect(() => {
-    //     if (state.message?.length) {
-    //         // console.log(state.message)
-    //     }
-    //     dispatch({
-    //         type: ActionType.ClearMessage
-    //     })
-    // }, [dispatch, state.message])
+    const [modalShow, setModalShow] = useState(false)
 
     const followHandler = (vacationId: number) => {
         followAction(dispatch, vacationId)
@@ -26,40 +17,44 @@ export const VacationCard: React.FC<IVacation> = ({...vacation}) => {
 
     const deleteHandler = async (vacationId: number) => {
         // eslint-disable-next-line no-restricted-globals
-       let del = confirm('are you sure to delete this vacation?')
-       del && await DeleteAction(dispatch, vacationId)
+        let del = confirm('are you sure to delete this vacation?')
+        del && await DeleteAction(dispatch, vacationId)
     }
 
-    const editHandler = (vacationId: number) => {
-
+    const editHandler = () => {
+        setModalShow(true)
     }
 
     const userButtons = (
-        <div>
-            <button type="button"
-                    className="btn btn-sm btn-outline-warning mr-1"
-                    onClick={() => followHandler(vacation.id)}>
-                {vacation.follow ? 'unfollow' : 'follow'}
-            </button>
-            <button type="button"
-                    className="btn btn-sm btn-outline-info"
-                    onClick={() => likeHandler(vacation.id)}>Like
-            </button>
-        </div>
+        <>
+            <div>
+                <button type="button"
+                        className={`btn btn-sm ${vacation.follow ? 'btn-outline-info' : 'btn-outline-warning'} mr-1`}
+                        onClick={() => followHandler(vacation.id)}>
+                    {vacation.follow ? 'unfollow' : 'follow'}
+                </button>
+            </div>
+            <span className="text-muted" onClick={() => likeHandler(vacation.id)}>{vacation.likes} <i
+                className="far fa-heart" role="button"/></span>
+        </>
     )
 
     const adminButtons = (
-        <div>
-            <button type="button"
-                    className="btn btn-sm btn-outline-warning mr-1"
-                    onClick={() => editHandler(vacation.id)}>
-                Edit
-            </button>
-            <button type="button"
-                    className="btn btn-sm btn-outline-info"
-                    onClick={() => deleteHandler(vacation.id)}>Delete
-            </button>
-        </div>
+        <>
+            <div>
+                <button type="button"
+                        className="btn btn-sm btn-outline-info mr-1"
+                        onClick={editHandler}>
+                    Edit
+                </button>
+                <button type="button"
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => deleteHandler(vacation.id)}>Delete
+                </button>
+                <EditForm show={modalShow} vacation={vacation} onHide={() => setModalShow(false)}/>
+            </div>
+            <span className="text-muted">{vacation.likes} likes</span>
+        </>
     )
 
     return (
@@ -67,21 +62,20 @@ export const VacationCard: React.FC<IVacation> = ({...vacation}) => {
             <div className="card mb-4 shadow-sm">
                 <img src={vacation.pictureUrl} className="card-img-top" width="100%" height="225" alt='img'/>
 
-                <div className={style}>
-                    <p className="card-text">id: {vacation.id}</p>
-                    <p className="card-text">{vacation.name}</p>
-                    <p className="card-text">{vacation.description}</p>
+                <div className={vacation.follow ? 'card-body follow-card' : 'card-body'}>
+                    <p className="card-text"><small>name:</small> {vacation.name}</p>
+                    <p className="card-text"><small>descriptions:</small> {vacation.description}</p>
                     <small className="card-text">
-                        from {vacation.fromDate.toString().slice(0, 10).replace(/-/g, '/')} to {vacation.toDate.toString().slice(0, 10).replace(/-/g, '/')}
+                        from {new Date(new Date(vacation.fromDate).getTime()).toLocaleDateString()} to {new Date(new Date(vacation.fromDate).getTime()).toLocaleDateString()}
                     </small>
-                    <p className="card-text">{vacation.price}$</p>
+                    <p className="card-text"><small>price:</small> {vacation.price}$</p>
+                    <hr/>
                     <div className="d-flex justify-content-between align-items-center">
                         {
                             state.userRole === 'admin'
                                 ? adminButtons
                                 : userButtons
                         }
-                        <small className="text-muted">{vacation.likes} likes</small>
                     </div>
                 </div>
             </div>

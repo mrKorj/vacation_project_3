@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom";
 import {appContext} from "../App";
 import {LogInAction} from "../reducers/authActions";
-import {ActionType} from "../reducers/reducer";
 import {LoadingSpinner} from "../components/LoadingSpinner";
+import {ActionType} from "../reducers/reducer";
 
 
 interface ILogIn {
@@ -17,18 +17,18 @@ export const LogInPage: React.FC = () => {
     const [form, setForm] = useState<ILogIn>({userName: '', password: ''})
     const {state, dispatch} = useContext(appContext)
 
-    const formHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({...form, [event.target.name]: event.target.value})
-    }
-
     useEffect(() => {
         if (state.message?.length) {
-            alert(state.message)
+            console.log(state.message)
         }
         dispatch({
             type: ActionType.ClearMessage
         })
     }, [state.message, dispatch])
+
+    const formHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({...form, [event.target.name]: event.target.value})
+    }
 
     if (state.isLogged) {
         return <Redirect to='/'/>

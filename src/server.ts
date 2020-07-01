@@ -2,7 +2,6 @@ import express from 'express'
 import expressJwt from 'express-jwt'
 import socketIo from 'socket.io'
 import http from 'http'
-import path from 'path'
 import fileUpload from 'express-fileupload'
 import {vacationRouter} from "./routers/vacationRouter"
 import {authorizationRouter} from "./routers/authorizationRouter"

@@ -4,7 +4,7 @@ export interface IVacation {
     description: string,
     fromDate: Date,
     toDate: Date,
-    picUrl: string,
+    picUrl?: string,
     price: number,
     followers?: number,
     likes?: number

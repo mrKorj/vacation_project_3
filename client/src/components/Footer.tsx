@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import {appContext} from "../App";
 
 export const Footer = () => {
+    const {state} = useContext(appContext)
     return (
         <>
-            <footer className="text-muted">
+            <footer className={`text-muted ${state.theme === 'light' ? 'footer' : 'footer-dark'}`}>
                 <div className="container">
                     <p className="float-right">
                         <a href="/">Back to top</a>

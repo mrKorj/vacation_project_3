@@ -29,11 +29,13 @@ router.put('/follow', async (req, res) => {
             res.status(400).send({message: `user '${userName}' doesn't have permission`})
             return
         }
-
+        const io = (req as any).io
         const {vacationId} = req.body
 
         const followId = await markFollow(userId, vacationId)
         res.send({message: 'toggle successes', followId})
+
+        io.sockets.emit('send_v', {vacationId, type: 'Follow'})
     } catch (e) {
         res.status(500).send(e)
     }
@@ -60,7 +62,7 @@ router.post('/add', (req, res) => {
             });
         }
 
-        let sampleFile = req.files.sampleFile
+        const sampleFile = req.files.sampleFile
 
         // @ts-ignore
         sampleFile.mv('./upload/' + sampleFile.name, async function (err) {
@@ -73,7 +75,7 @@ router.post('/add', (req, res) => {
 
             const {error} = vacationSchema.validate({name, description, fromDate, toDate, picUrl, price})
             if (error) {
-                res.status(400).send(error.details[0].message)
+                res.status(400).send({message: error.details[0].message})
                 console.log(error.details[0].message)
                 return
             }
@@ -110,14 +112,18 @@ router.put('/edit', async (req, res) => {
             return
         }
 
-        const {id, name, description, fromDate, toDate, picUrl, price}: IVacation = req.body
-        const {error} = vacationSchema.validate({name, description, fromDate, toDate, picUrl, price})
+        const {id, name, description, fromDate, toDate, price}: IVacation = req.body
+
+        const {error} = vacationSchema.validate({name, description, fromDate, toDate, price})
+
         if (error) {
-            res.status(400).send(error.details[0].message)
+            res.status(400).send({message: error.details[0].message})
             return
         }
-        const vacationUpdate = await editVacation({id, name, description, fromDate, toDate, picUrl, price} as IVacation)
-        res.send({message: 'vacation updated successfully', vacationUpdate})
+
+        const editedVacation = await editVacation({id, name, description, fromDate, toDate, price} as IVacation)
+
+        res.send({message: 'vacation updated successfully', editedVacation : editedVacation})
     } catch (e) {
         res.status(500).send(e)
     }

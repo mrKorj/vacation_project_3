@@ -18,7 +18,7 @@ export const RegisterPage: React.FC = () => {
 
     useEffect(() => {
         if (state.message?.length) {
-            alert(state.message)
+            console.log(state.message)
         }
         dispatch({
             type: ActionType.ClearMessage

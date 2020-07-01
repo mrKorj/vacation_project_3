@@ -2,10 +2,12 @@ export interface IState {
     vacations: IVacation[],
     isLogged: boolean,
     isLoading: boolean,
+    uploadingData?: boolean,
     message?: string | null,
     userRole: string | null,
     userId: number | null,
-    userName: string | null
+    userName: string | null,
+    theme: string
 }
 
 export interface IVacation {
@@ -17,7 +19,8 @@ export interface IVacation {
     pictureUrl: string,
     price: number,
     follow?: boolean,
-    likes?: number
+    likes?: number,
+    countFollowers?: number
 }
 
 export interface IAction {
@@ -28,11 +31,13 @@ export interface IAction {
 export const initialState: IState = {
     vacations: [],
     isLoading: false,
+    uploadingData: false,
     isLogged: false,
     message: null,
     userRole: null,
     userId: null,
-    userName: null
+    userName: null,
+    theme: 'light'
 }
 
 export enum ActionType {
@@ -40,13 +45,17 @@ export enum ActionType {
     UserLogOut = 'USER_LOGOUT',
     Loading = 'LOADING',
     LoadingEnd = 'LOADING_END',
+    UploadingDataEnd = 'UPLOADING_DATA_END',
+    UploadingData = 'UPLOADING_DATA',
     Message = 'MESSAGE',
     ClearMessage = 'CLEAR_MESSAGE',
     GetVacations = 'GET_VACATIONS',
-    DeleteVacations = 'DELETE_VACATIONS',
+    DeleteVacation = 'DELETE_VACATIONS',
+    EditVacation = 'EDIT_VACATIONS',
     Follow = 'FOLLOW',
     Like = 'LIKE',
-    AddVacation = 'ADD_VACATION'
+    AddVacation = 'ADD_VACATION',
+    ChangeTheme = 'CHANGE_THEME'
 }
 
 export const reducer = (state: IState, action: IAction): IState => {
@@ -57,7 +66,7 @@ export const reducer = (state: IState, action: IAction): IState => {
                 vacations: action.payload as any
             }
         }
-        case ActionType.DeleteVacations: {
+        case ActionType.DeleteVacation: {
             const vacationId = action.payload as any
 
             return {
@@ -66,10 +75,28 @@ export const reducer = (state: IState, action: IAction): IState => {
             }
         }
         case ActionType.AddVacation: {
-            // state.vacations.push(action.payload as IVacation)
             return {
                 ...state,
                 vacations: state.vacations.concat(action.payload as IVacation)
+            }
+        }
+        case ActionType.EditVacation: {
+            const data = action.payload as any
+
+            const vacations = state.vacations.map((vacation) => {
+                if (vacation.id === data.id) {
+                    vacation.name = data.name
+                    vacation.price = data.price
+                    vacation.description = data.description
+                    vacation.toDate = data.toDate
+                    vacation.fromDate = data.fromDate
+                }
+                return vacation
+            })
+
+            return {
+                ...state,
+                vacations
             }
         }
         case ActionType.Follow: {
@@ -117,7 +144,8 @@ export const reducer = (state: IState, action: IAction): IState => {
                 message: null,
                 userRole: null,
                 userId: null,
-                userName: null
+                userName: null,
+                theme: 'white'
             }
         }
         case ActionType.Loading: {
@@ -132,6 +160,18 @@ export const reducer = (state: IState, action: IAction): IState => {
                 isLoading: false
             }
         }
+        case ActionType.UploadingData: {
+            return {
+                ...state,
+                uploadingData: true
+            }
+        }
+        case ActionType.UploadingDataEnd: {
+            return {
+                ...state,
+                uploadingData: false
+            }
+        }
         case ActionType.Message: {
             return {
                 ...state,
@@ -142,6 +182,12 @@ export const reducer = (state: IState, action: IAction): IState => {
             return {
                 ...state,
                 message: null
+            }
+        }
+        case ActionType.ChangeTheme: {
+            return {
+                ...state,
+                theme: state.theme === 'light' ? 'dark' : 'light'
             }
         }
 
