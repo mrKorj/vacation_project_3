@@ -1,20 +1,17 @@
 import {Router} from 'express'
-import {addVacation, deleteVacation, editVacation, getVacation, likeVacation, markFollow} from "../db/dbQueries"
+import {addVacation, deleteVacation, editVacation, getCountFollowers, getVacation, likeVacation, markFollow} from "../db/dbQueries"
 import {IVacation} from "../models/vacationModel";
 import {vacationSchema} from "../schemas/vacationSchema";
+import {adminSocket} from "../server";
 
 const router = Router()
-
 
 // -------- get all vacations
 router.get('/', async (req, res) => {
     const {userId} = (req as any).user // from express-jwt middleware
-    const io = (req as any).io
+
     try {
         const vacations = await getVacation(userId)
-
-        io.sockets.emit('send_v', vacations)
-
         res.send(vacations);
     } catch (e) {
         res.status(500).send(e)
@@ -32,10 +29,14 @@ router.put('/follow', async (req, res) => {
         const io = (req as any).io
         const {vacationId} = req.body
 
-        const followId = await markFollow(userId, vacationId)
-        res.send({message: 'toggle successes', followId})
+        await markFollow(userId, vacationId)
 
-        io.sockets.emit('send_v', {vacationId, type: 'Follow'})
+        const [{countFollowers}]: any = await getCountFollowers(vacationId)
+
+        io.to(adminSocket.id).emit('followActionClient', {vacationId, type: 'FOLLOW', countFollowers})
+
+        res.send({message: 'toggle successes'})
+
     } catch (e) {
         res.status(500).send(e)
     }
@@ -80,7 +81,11 @@ router.post('/add', (req, res) => {
                 return
             }
             const newVacation = await addVacation({name, description, fromDate, toDate, picUrl, price} as IVacation)
+
             res.send({message: 'vacation add successfully', newVacation})
+
+            // @ts-ignore
+            adminSocket.socket.broadcast.emit('addNewVacation', newVacation)
 
             // res.send({
             //     status: true,
@@ -112,8 +117,8 @@ router.put('/edit', async (req, res) => {
             return
         }
 
-        const {id, name, description, fromDate, toDate, price}: IVacation = req.body
-
+        const {form} = req.body
+        const {id, name, description, fromDate, toDate, price}: IVacation = JSON.parse(form)
         const {error} = vacationSchema.validate({name, description, fromDate, toDate, price})
 
         if (error) {
@@ -121,9 +126,36 @@ router.put('/edit', async (req, res) => {
             return
         }
 
-        const editedVacation = await editVacation({id, name, description, fromDate, toDate, price} as IVacation)
+        if (!req.files) {
+            const editedVacation = await editVacation({id, name, description, fromDate, toDate, price} as IVacation)
 
-        res.send({message: 'vacation updated successfully', editedVacation : editedVacation})
+            // @ts-ignore
+            adminSocket.socket.broadcast.emit('editVacation', editedVacation)
+
+            res.send({message: 'vacation updated successfully', editedVacation})
+            return
+        }
+
+        const sampleFile = req.files.sampleFile
+
+        // @ts-ignore
+        sampleFile.mv('./upload/' + sampleFile.name, async function (err) {
+            if (err) {
+                return res.status(500).send({err, message: 'mv file error'})
+            }
+
+            // @ts-ignore
+            const picUrl = `./upload/${sampleFile.name}`
+
+            const editedVacation = await editVacation({id, name, description, fromDate, picUrl, toDate, price} as IVacation)
+
+            // @ts-ignore
+            adminSocket.socket.broadcast.emit('editVacation', editedVacation)
+
+            res.send({message: 'vacation updated successfully', editedVacation})
+
+        })
+
     } catch (e) {
         res.status(500).send(e)
     }
@@ -140,6 +172,12 @@ router.delete('/delete', async (req, res) => {
 
         const {vacationId} = req.body
         const result = await deleteVacation(vacationId)
+
+        if (result[0]) {
+            // @ts-ignore
+            adminSocket.socket.broadcast.emit('deleteAction', vacationId)
+        }
+
         res.send({message: 'vacation deleted successfully', result})
     } catch (e) {
         res.status(500).send(e)
@@ -155,9 +193,13 @@ router.put('/like', async (req, res) => {
             return
         }
 
+        const io = (req as any).io
         const {vacationId} = req.body
         await likeVacation(vacationId)
+
         res.send({message: 'like successes'})
+
+        io.to(adminSocket.id).emit('likeActionClient', vacationId)
     } catch (e) {
         res.status(500).send(e)
     }

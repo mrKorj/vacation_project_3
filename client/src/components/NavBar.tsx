@@ -23,28 +23,39 @@ export const NavBar = () => {
     }
 
     return (
-        <div>
+        <>
             <nav
-                className={`mb-1 navbar navbar-expand-lg fixed-top ${state.theme === 'light' ? 'navbar-light bg-nav' : 'navbar-dark bg-nav-dark'}`}>
+                className={`mb-1 navbar navbar-expand-sm fixed-top ${state.theme === 'light' ? 'navbar-light bg-nav' : 'navbar-dark bg-nav-dark'}`}>
                 <div className="container">
                     <img src="/img/vacation2.png" className="navbar-brand" height="50" alt="logo"/>
                     <div className="navbar-collapse">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
-                                <NavLink className="nav-link" to={'/'} exact>Home</NavLink>
+                                <NavLink className="nav-link font-weight-bold" to={'/'} exact>Home</NavLink>
                             </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to={'/about'}>About</NavLink>
-                            </li>
+                            {
+                                state.userRole !== 'admin'
+                                    ? <>
+                                        <li className="nav-item">
+                                            <NavLink className="nav-link font-weight-bold" to={'/contacts'}>Contacts</NavLink>
+                                        </li>
+                                        <li className="nav-item">
+                                            <NavLink className="nav-link font-weight-bold" to={'/about'}>About</NavLink>
+                                        </li>
+                                    </>
+                                    : null
+                            }
+
                             {
                                 state.userRole === 'admin'
                                     ? (
                                         <>
                                             <li className="nav-item">
-                                                <NavLink className="nav-link" to="/chart">Activity charts</NavLink>
+                                                <NavLink className="nav-link font-weight-bold" to="/chart">Activity
+                                                    charts</NavLink>
                                             </li>
                                             <li className="nav-item">
-                                                <button className="mt-1-5 btn btn-outline-info btn-sm"
+                                                <button className="mt-1-5 btn btn-outline-info btn-sm font-weight-bold"
                                                         onClick={addVacationHandler}>Add vacation
                                                 </button>
                                             </li>
@@ -58,31 +69,22 @@ export const NavBar = () => {
 
                         <ul className="navbar-nav ml-auto nav-flex-icons">
                             <li className="nav-item">
-                                <a className="nav-link waves-effect waves-light">
-                                    <i className="fab fa-twitter"/>
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link waves-effect waves-light">
-                                    <i className="fab fa-google-plus-g"/>
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <span className="nav-link waves-effect waves-light">
-                                    Welcome <strong>{state.userName}</strong>
+                                <span className="nav-link">
+                                    Welcome <strong className='text-capitalize'>{state.userName}</strong>
                                 </span>
                             </li>
                             <li className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle" id="DropdownMenuLink"
-                                   data-toggle="dropdown"
-                                   aria-haspopup="true" aria-expanded="false">
-                                    <i className="fas fa-user"/>
-                                </a>
+                                <span className="nav-link dropdown-toggle" id="DropdownMenuLink"
+                                      data-toggle="dropdown"
+                                      aria-haspopup="true" aria-expanded="false" role='button'>
+                                     <i className="fas fa-user"/>
+                                </span>
                                 <div className="dropdown-menu dropdown-menu-right dropdown-default"
                                      aria-labelledby="DropdownMenuLink">
-                                    <a className="dropdown-item" href="#" onClick={logoutHandler}>Log Out</a>
-                                    <a className="dropdown-item" href="#"
-                                       onClick={themeHandler}>{state.theme === 'light' ? 'Dark Theme' : 'Light Theme'}</a>
+                                    <span className="dropdown-item" role='button' onClick={logoutHandler}>Log Out</span>
+                                    <span className="dropdown-item" role='button'
+                                          onClick={themeHandler}>
+                                        {state.theme === 'light' ? 'Dark Theme' : 'Light Theme'}</span>
                                 </div>
                             </li>
                         </ul>
@@ -90,6 +92,6 @@ export const NavBar = () => {
                 </div>
             </nav>
             <AddForm show={modalShow} onHide={() => setModalShow(false)}/>
-        </div>
+        </>
     );
 };

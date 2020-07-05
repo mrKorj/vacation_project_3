@@ -17,7 +17,7 @@ export const VacationCard: React.FC<IVacation> = ({...vacation}) => {
 
     const deleteHandler = async (vacationId: number) => {
         // eslint-disable-next-line no-restricted-globals
-        let del = confirm('are you sure to delete this vacation?')
+        const del = confirm('are you sure to delete this vacation?')
         del && await DeleteAction(dispatch, vacationId)
     }
 
@@ -45,11 +45,11 @@ export const VacationCard: React.FC<IVacation> = ({...vacation}) => {
                 <button type="button"
                         className="btn btn-sm btn-outline-info mr-1"
                         onClick={editHandler}>
-                    Edit
+                    Edit <i className="far fa-edit"/>
                 </button>
                 <button type="button"
                         className="btn btn-sm btn-outline-danger"
-                        onClick={() => deleteHandler(vacation.id)}>Delete
+                        onClick={() => deleteHandler(vacation.id)}>Delete <i className="far fa-trash-alt"/>
                 </button>
                 <EditForm show={modalShow} vacation={vacation} onHide={() => setModalShow(false)}/>
             </div>
@@ -66,7 +66,7 @@ export const VacationCard: React.FC<IVacation> = ({...vacation}) => {
                     <p className="card-text"><small>name:</small> {vacation.name}</p>
                     <p className="card-text"><small>descriptions:</small> {vacation.description}</p>
                     <small className="card-text">
-                        from {new Date(new Date(vacation.fromDate).getTime()).toLocaleDateString()} to {new Date(new Date(vacation.fromDate).getTime()).toLocaleDateString()}
+                        from {new Date(new Date(vacation.fromDate).getTime()).toLocaleDateString()} to {new Date(new Date(vacation.toDate).getTime()).toLocaleDateString()}
                     </small>
                     <p className="card-text"><small>price:</small> {vacation.price}$</p>
                     <hr/>

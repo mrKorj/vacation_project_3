@@ -105,15 +105,17 @@ export const editVacationAction = async (dispatch: Dispatch<IAction>, {...form})
     })
 
     const token = getToken()
+    const formData = new FormData()
+    formData.append('sampleFile', form.sampleFile as any)
+    formData.append('form', JSON.stringify(form))
 
     try {
         const response = await fetch(`${SERVER_URL}edit`, {
             method: 'PUT',
             headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
+                Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify(form)
+            body: formData
         })
         const data = await response.json()
         const {message, editedVacation} = data

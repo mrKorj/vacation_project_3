@@ -32,6 +32,10 @@
     margin-top: 5rem;
 }
 
+.mb-7 {
+    margin-bottom: 7rem !important;
+}
+
 .mt-1-5 {
     margin-top: .30rem !important;
 }

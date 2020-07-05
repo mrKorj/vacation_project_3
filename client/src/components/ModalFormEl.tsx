@@ -6,13 +6,13 @@ interface IModalProps {
     onHide(): void,
     onSubmitHandler(event: any): void,
     onChange(event: any): void,
-    onClose(): void,
+    onClose?(): void,
     uploadFileChangeEvent(event: any): void,
     show: boolean,
     state: IState,
     inputVal: any,
     titleText: string,
-    disabled?: boolean
+    required?: boolean
 }
 
 export const ModalFormEl: React.FC<IModalProps> = (
@@ -26,7 +26,7 @@ export const ModalFormEl: React.FC<IModalProps> = (
         state,
         inputVal,
         titleText,
-        disabled = false
+        required = false
     }
 ) => {
 
@@ -102,25 +102,16 @@ export const ModalFormEl: React.FC<IModalProps> = (
                                           className="form-control"
                                           placeholder="min 5 symbol"
                                           rows={2}/>
-                                {
-                                    !disabled
-                                        ? <>
-                                            <label htmlFor="inputFile" className="mb-0">Picture</label>
-                                            <input type="file"
-                                                   name="sampleFile"
-                                                   className="custom-file"
-                                                   disabled={disabled}
-                                                   onChange={uploadFileChangeEvent}/>
-                                        </>
-                                        : null
-                                }
-
+                                <label htmlFor="inputFile" className="mb-0">Picture</label>
+                                <input type="file"
+                                       name="sampleFile"
+                                       className="custom-file"
+                                       required={required}
+                                       onChange={uploadFileChangeEvent}/>
 
                                 {
                                     state.message
-                                        ? <p className="text-danger">{state.message}</p>
-                                        : disabled
-                                        ? null
+                                        ? <p className="text-success">{state.message}</p>
                                         : <>
                                             <small className="text-secondary">file types: JPEG, PNG, SVG</small>
                                             <br/>
@@ -142,7 +133,9 @@ export const ModalFormEl: React.FC<IModalProps> = (
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => {
                         onHide();
-                        onClose()
+                        if (onClose) {
+                            onClose()
+                        }
                     }} disabled={state.uploadingData}>Close</Button>
                 </Modal.Footer>
             </Modal>

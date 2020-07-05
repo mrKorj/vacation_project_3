@@ -1,10 +1,10 @@
 import React, {useContext, useEffect} from 'react';
-import {NavBar} from "../components/NavBar";
-import {Redirect} from "react-router-dom";
 import {appContext} from "../App";
+import {Redirect} from "react-router-dom";
+import {NavBar} from "../components/NavBar";
 import {Footer} from "../components/Footer";
 
-export const AboutPage = () => {
+export const ContactsPage: React.FC = () => {
     const {state} = useContext(appContext)
 
     useEffect(() => {
@@ -23,15 +23,13 @@ export const AboutPage = () => {
                 <NavBar/>
                 <div className="jumbotron jumbotron-fluid mt-7">
                     <div className="container">
-                        <h2 className="display-4">About Page</h2>
-                        <p className="lead">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque deleniti fugiat in perferendis qui quod recusandae ut vel! Dicta, libero!</p>
+                        <h2 className="display-4">Contacts Page</h2>
+                        <p className="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque deleniti fugiat in perferendis qui quod recusandae ut vel! Dicta, libero!</p>
                     </div>
                 </div>
                 <div className="jumbotron jumbotron-fluid">
                     <div className="container">
-                        <p className="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aperiam architecto autem cumque eius fugiat in, inventore,
-                            iste iusto laboriosam minima minus mollitia obcaecati placeat quam, quis sequi velit voluptatibus?</p>
+                        <p className="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque deleniti fugiat in perferendis qui quod recusandae ut vel! Dicta, libero!</p>
                     </div>
                 </div>
             </div>

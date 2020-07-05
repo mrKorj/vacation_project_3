@@ -1,7 +1,6 @@
 import React, {ChangeEvent, FormEvent, useContext, useState} from 'react';
 import {appContext} from "../App";
 import {addVacationAction} from "../reducers/appActions";
-import {ActionType} from "../reducers/reducer";
 import {ModalFormEl} from "./ModalFormEl";
 
 interface IFormModalProps {
@@ -28,9 +27,6 @@ export const AddForm: React.FC<IFormModalProps> = ({show, onHide}) => {
     }
 
     const onClose = () => {
-        dispatch({
-            type: ActionType.ClearMessage
-        })
         setInputVal({name: '', price: '', fromDate: '', toDate: '', description: '', sampleFile: []})
     }
 
@@ -45,6 +41,7 @@ export const AddForm: React.FC<IFormModalProps> = ({show, onHide}) => {
                          state={state}
                          inputVal={inputVal}
                          titleText={'Add vacation form'}
+                         required={true}
             />
         </>
     );

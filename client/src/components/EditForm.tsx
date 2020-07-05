@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FormEvent, useContext, useState} from 'react';
 import {appContext} from "../App";
-import {ActionType, IVacation} from "../reducers/reducer";
+import {IVacation} from "../reducers/reducer";
 import {ModalFormEl} from "./ModalFormEl";
 import {editVacationAction} from "../reducers/appActions";
 
@@ -38,23 +38,16 @@ export const EditForm: React.FC<IFormModalProps> = ({show, onHide, vacation}) =>
         setInputVal({...inputVal, [event.target.name]: event.target.value})
     }
 
-    const onClose = () => {
-        dispatch({
-            type: ActionType.ClearMessage
-        })
-    }
-
     return (
         <ModalFormEl show={show}
                      onHide={onHide}
                      onSubmitHandler={onSubmitHandler}
                      onChange={onChange}
-                     onClose={onClose}
                      uploadFileChangeEvent={uploadFileChangeEvent}
                      state={state}
                      inputVal={inputVal}
                      titleText={'Edit vacation form'}
-                     disabled={true}
+                     required={false}
         />
     );
 };

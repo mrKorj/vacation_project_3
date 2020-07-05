@@ -7,7 +7,8 @@ export interface IState {
     userRole: string | null,
     userId: number | null,
     userName: string | null,
-    theme: string
+    theme: string,
+    socketId: {}
 }
 
 export interface IVacation {
@@ -37,7 +38,8 @@ export const initialState: IState = {
     userRole: null,
     userId: null,
     userName: null,
-    theme: 'light'
+    theme: 'light',
+    socketId: {}
 }
 
 export enum ActionType {
@@ -50,12 +52,13 @@ export enum ActionType {
     Message = 'MESSAGE',
     ClearMessage = 'CLEAR_MESSAGE',
     GetVacations = 'GET_VACATIONS',
-    DeleteVacation = 'DELETE_VACATIONS',
+    DeleteVacation = 'DELETE_VACATION',
     EditVacation = 'EDIT_VACATIONS',
     Follow = 'FOLLOW',
     Like = 'LIKE',
     AddVacation = 'ADD_VACATION',
-    ChangeTheme = 'CHANGE_THEME'
+    ChangeTheme = 'CHANGE_THEME',
+    GetCountFollowers = 'GET_COUNT_FOLLOWERS'
 }
 
 export const reducer = (state: IState, action: IAction): IState => {
@@ -90,6 +93,7 @@ export const reducer = (state: IState, action: IAction): IState => {
                     vacation.description = data.description
                     vacation.toDate = data.toDate
                     vacation.fromDate = data.fromDate
+                    vacation.pictureUrl = data.pictureUrl
                 }
                 return vacation
             })
@@ -101,12 +105,26 @@ export const reducer = (state: IState, action: IAction): IState => {
         }
         case ActionType.Follow: {
             const vacationId = action.payload as any
+            const vacations = state.vacations.map((vacation) => {
+                if (vacation.id === vacationId) {
+                    vacation.follow = !vacation.follow
+                }
+                return vacation
+            })
+
+            return {
+                ...state,
+                vacations
+            }
+        }
+        case ActionType.GetCountFollowers: {
+            const {vacationId, countFollowers} = action.payload as any
 
             return {
                 ...state,
                 vacations: state.vacations.map((vacation) => {
                     if (vacation.id === vacationId) {
-                        vacation.follow = !vacation.follow
+                        vacation.countFollowers = countFollowers
                     }
                     return vacation
                 })
@@ -137,15 +155,10 @@ export const reducer = (state: IState, action: IAction): IState => {
             }
         }
         case ActionType.UserLogOut: {
+            state = initialState
+
             return {
-                vacations: [],
-                isLoading: false,
-                isLogged: false,
-                message: null,
-                userRole: null,
-                userId: null,
-                userName: null,
-                theme: 'white'
+                ...state
             }
         }
         case ActionType.Loading: {

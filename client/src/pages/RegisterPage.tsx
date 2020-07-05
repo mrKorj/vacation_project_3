@@ -1,8 +1,8 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {appContext} from "../App";
 import {RegisterAction} from "../reducers/authActions";
 import {Link, Redirect} from "react-router-dom";
-import {ActionType} from "../reducers/reducer";
+import {Message} from "../components/Message";
 
 
 interface IRegister {
@@ -15,15 +15,6 @@ interface IRegister {
 export const RegisterPage: React.FC = () => {
     const [form, setForm] = useState<IRegister>({firstName: '', lastName: '', userName: '', password: ''})
     const {state, dispatch} = useContext(appContext)
-
-    useEffect(() => {
-        if (state.message?.length) {
-            console.log(state.message)
-        }
-        dispatch({
-            type: ActionType.ClearMessage
-        })
-    }, [state.message, dispatch])
 
     if (state.isLogged) {
         return <Redirect to='/'/>
@@ -44,6 +35,8 @@ export const RegisterPage: React.FC = () => {
                 <img className="mb-1" src="img/vacation.png" alt="logo"
                      width="250" height="250"/>
                 <h1 className="h3 mb-3 font-weight-normal">Registration form</h1>
+
+                {state.message ? <Message/> : null}
 
                 <label htmlFor="inputName" className="sr-only">Name</label>
                 <input type="text"

@@ -66,6 +66,12 @@ export async function markFollow(userId: number, vacationId: number): Promise<bo
     }
 }
 
+//------- get count followers
+export async function getCountFollowers(vacationId: number) {
+    const [countFollowers] = await appDb.execute('SELECT countFollowers FROM vacations WHERE id = ?', [vacationId])
+    return countFollowers
+}
+
 //---- add new vacation
 export async function addVacation({name, description, fromDate, toDate, picUrl, price}: IVacation): Promise<number> {
     const [{insertId}]: any = await appDb
@@ -75,7 +81,16 @@ export async function addVacation({name, description, fromDate, toDate, picUrl, 
 }
 
 //----- edit vacation
-export async function editVacation({id, name, description, fromDate, toDate, price}: IVacation): Promise<boolean | any> {
+export async function editVacation({id, name, description, fromDate, toDate, picUrl, price}: IVacation): Promise<boolean | any> {
+    if(picUrl?.length) {
+        const [result]: any = await appDb
+            .execute('UPDATE vacations SET name = ?, description = ?, fromDate = ?, toDate = ?, pictureUrl = ?, price = ? WHERE id = ?', [name, description, fromDate, toDate, picUrl, price, id])
+        if (result.affectedRows > 0) {
+            const [editVacation]: any = await appDb.execute('SELECT * FROM vacations WHERE id = ?', [id])
+            return editVacation[0]
+        }
+        return result.affectedRows > 0
+    }
     const [result]: any = await appDb
         .execute('UPDATE vacations SET name = ?, description = ?, fromDate = ?, toDate = ?, price = ? WHERE id = ?', [name, description, fromDate, toDate, price, id])
     if (result.affectedRows > 0) {

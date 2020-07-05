@@ -10,11 +10,9 @@ export const Message = () => {
         dispatch({
             type: ActionType.ClearMessage
         })
-    }, 5000)
+    }, 6000)
 
     return (
-        state.message
-            ? <div className={`alert alert-${type}`} role="alert">{state.message}</div>
-            : null
+        <div className={`alert alert-${type}`} role="alert">{state.message}</div>
     )
 }

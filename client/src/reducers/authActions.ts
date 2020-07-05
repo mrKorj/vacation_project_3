@@ -46,10 +46,6 @@ export const AuthenticationAction = async (dispatch: Dispatch<IAction>) => {
         dispatch({
             type: ActionType.LoadingEnd
         })
-        dispatch({
-            type: ActionType.Message,
-            payload: e
-        })
     }
 }
 

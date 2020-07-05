@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import {Redirect, Route} from 'react-router-dom'
-import {MainPage} from "./pages/mainPage";
+import {MainPage} from "./pages/MainPage";
 import {appContext} from "./App";
-import {LogInPage} from "./pages/logInPage";
+import {LogInPage} from "./pages/LogInPage";
 
 export const PrivetRoute: React.FC = () => {
     const {state} = useContext(appContext)

@@ -1,9 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {Link, Redirect} from "react-router-dom";
 import {appContext} from "../App";
 import {LogInAction} from "../reducers/authActions";
 import {LoadingSpinner} from "../components/LoadingSpinner";
-import {ActionType} from "../reducers/reducer";
+import {Message} from "../components/Message";
 
 
 interface ILogIn {
@@ -16,15 +16,6 @@ interface ILogIn {
 export const LogInPage: React.FC = () => {
     const [form, setForm] = useState<ILogIn>({userName: '', password: ''})
     const {state, dispatch} = useContext(appContext)
-
-    useEffect(() => {
-        if (state.message?.length) {
-            console.log(state.message)
-        }
-        dispatch({
-            type: ActionType.ClearMessage
-        })
-    }, [state.message, dispatch])
 
     const formHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setForm({...form, [event.target.name]: event.target.value})
@@ -49,6 +40,9 @@ export const LogInPage: React.FC = () => {
                 <img className="mb-1" src="img/vacation.png" alt="logo"
                      width="250" height="250"/>
                 <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
+
+                {state.message ? <Message/> : null}
+
                 <label htmlFor="inputUserName" className="sr-only">User name</label>
                 <input type="text" name="userName"
                        id="inputUserName"
