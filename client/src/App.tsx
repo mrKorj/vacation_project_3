@@ -24,7 +24,13 @@ function App() {
     const [state, dispatch] = useReducer(reducer, initialState)
 
     useEffect(() => {
+        AuthenticationAction(dispatch)
+    }, [dispatch])
+
+    useEffect(() => {
         if (state.isLogged) {
+            getVacationsAction(dispatch)
+
             socket.on('followActionClient', (data: any) => {
                 dispatch({
                     type: ActionType.GetCountFollowers,
@@ -63,22 +69,8 @@ function App() {
             if (state.userRole === 'admin') {
                 socket.emit('adminSocketId', socket.id)
             }
-
-            // socket.emit('getId')
-            // socket.on('getIdServer', (id: any) => {
-            //     console.log(id)
-            // })
         }
     }, [state.userRole, state.isLogged])
-
-    useEffect(() => {
-        AuthenticationAction(dispatch)
-
-        if (state.isLogged) {
-            getVacationsAction(dispatch)
-        }
-    }, [dispatch, state.isLogged])
-
 
     return (
         <appContext.Provider value={{state, dispatch}}>

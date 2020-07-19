@@ -16,9 +16,23 @@ export const VacationCard: React.FC<IVacation> = ({...vacation}) => {
     }
 
     const deleteHandler = async (vacationId: number) => {
-        // eslint-disable-next-line no-restricted-globals
-        const del = confirm('are you sure to delete this vacation?')
-        del && await DeleteAction(dispatch, vacationId)
+        // @ts-ignore
+        swal({
+            title: "Are you sure to delete this vacation?",
+            text: "Once deleted, you will not be able to recover this vacation!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then(async (willDelete: any) => {
+                if (willDelete) {
+                    // @ts-ignore
+                    swal("Vacation has been deleted!", {
+                        icon: "success",
+                    });
+                    await DeleteAction(dispatch, vacationId)
+                }
+            });
     }
 
     const editHandler = () => {

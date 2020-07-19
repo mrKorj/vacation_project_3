@@ -86,19 +86,6 @@ router.post('/add', (req, res) => {
 
             // @ts-ignore
             adminSocket.socket.broadcast.emit('addNewVacation', newVacation)
-
-            // res.send({
-            //     status: true,
-            //     message: 'File is uploaded',
-            //     data: {
-            //         // @ts-ignore
-            //         name: sampleFile.name,
-            //         // @ts-ignore
-            //         mimetype: sampleFile.mimetype,
-            //         // @ts-ignore
-            //         size: sampleFile.size
-            //     }
-            // })
         })
 
     } catch (e) {

@@ -32,7 +32,6 @@ export const Chart: React.FC = () => {
         axisY: {
             title: "Number of Followers",
             interval: 1,
-            // labelFormatter: addSymbols
         },
         data: [{
             type: "column",

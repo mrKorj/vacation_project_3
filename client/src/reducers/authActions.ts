@@ -2,8 +2,6 @@ import {clearToken, getToken, saveToken} from "../token";
 import {Dispatch} from "react";
 import {ActionType, IAction} from "./reducer";
 
-const SERVER_URL = '/api/authorization/'
-
 export const AuthenticationAction = async (dispatch: Dispatch<IAction>) => {
     dispatch({
         type: ActionType.Loading
@@ -55,7 +53,7 @@ export const RegisterAction = async ({...form}, dispatch: Dispatch<IAction>) => 
     })
 
     try {
-        const response = await fetch(`${SERVER_URL}register`, {
+        const response = await fetch('/api/authorization/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -88,7 +86,7 @@ export const RegisterAction = async ({...form}, dispatch: Dispatch<IAction>) => 
         })
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'Server Error 500' as any
         })
     }
 }
@@ -99,7 +97,7 @@ export const LogInAction = async ({...form}, dispatch: Dispatch<IAction>) => {
     })
 
     try {
-        const response = await fetch(`${SERVER_URL}login`, {
+        const response = await fetch('/api/authorization/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -132,7 +130,7 @@ export const LogInAction = async ({...form}, dispatch: Dispatch<IAction>) => {
         })
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'Server Error 500' as any
         })
     }
 }

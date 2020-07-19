@@ -111,7 +111,7 @@ export const ModalFormEl: React.FC<IModalProps> = (
 
                                 {
                                     state.message
-                                        ? <p className="text-success">{state.message}</p>
+                                        ? <p className="text-warning">{state.message}</p>
                                         : <>
                                             <small className="text-secondary">file types: JPEG, PNG, SVG</small>
                                             <br/>

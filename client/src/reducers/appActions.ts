@@ -14,8 +14,10 @@ export const addVacationAction = async (dispatch: Dispatch<IAction>, {...form}) 
     formData.append('sampleFile', form.sampleFile as any)
     formData.append('form', JSON.stringify(form))
 
+    if (fileSizeCheck(form.sampleFile, dispatch)) return
+
     try {
-        const response = await fetch(`${SERVER_URL}add`, {
+        const response = await fetch('/api/add', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`
@@ -53,7 +55,7 @@ export const addVacationAction = async (dispatch: Dispatch<IAction>, {...form}) 
     } catch (e) {
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'server error' as any
         })
         dispatch({
             type: ActionType.UploadingDataEnd
@@ -69,7 +71,7 @@ export const getVacationsAction = async (dispatch: Dispatch<IAction>) => {
     const token = getToken()
 
     try {
-        const response = await fetch(SERVER_URL, {
+        const response = await fetch('/api', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -94,7 +96,7 @@ export const getVacationsAction = async (dispatch: Dispatch<IAction>) => {
         })
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'server error' as any
         })
     }
 }
@@ -109,8 +111,10 @@ export const editVacationAction = async (dispatch: Dispatch<IAction>, {...form})
     formData.append('sampleFile', form.sampleFile as any)
     formData.append('form', JSON.stringify(form))
 
+    if (fileSizeCheck(form.sampleFile, dispatch)) return
+
     try {
-        const response = await fetch(`${SERVER_URL}edit`, {
+        const response = await fetch('/api/edit', {
             method: 'PUT',
             headers: {
                 Authorization: `Bearer ${token}`
@@ -147,7 +151,7 @@ export const editVacationAction = async (dispatch: Dispatch<IAction>, {...form})
     } catch (e) {
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'server error' as any
         })
     }
 }
@@ -156,7 +160,7 @@ export const followAction = async (dispatch: Dispatch<IAction>, vacationId: numb
     const token = getToken()
 
     try {
-        await fetch(`${SERVER_URL}follow`, {
+        await fetch('/api/follow', {
             method: 'PUT',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -172,7 +176,7 @@ export const followAction = async (dispatch: Dispatch<IAction>, vacationId: numb
     } catch (e) {
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'server error' as any
         })
     }
 }
@@ -181,7 +185,7 @@ export const likeAction = async (dispatch: Dispatch<IAction>, vacationId: number
     const token = getToken()
 
     try {
-        await fetch(`${SERVER_URL}like`, {
+        await fetch('/api/like', {
             method: 'PUT',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -197,7 +201,7 @@ export const likeAction = async (dispatch: Dispatch<IAction>, vacationId: number
     } catch (e) {
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'server error' as any
         })
     }
 }
@@ -230,7 +234,7 @@ export const DeleteAction = async (dispatch: Dispatch<IAction>, vacationId: numb
     } catch (e) {
         dispatch({
             type: ActionType.Message,
-            payload: e
+            payload: 'server error' as any
         })
     }
 }
@@ -239,4 +243,30 @@ export const ChangeThemeAction = (dispatch: Dispatch<IAction>) => {
     dispatch({
         type: ActionType.ChangeTheme
     })
+}
+
+const fileSizeCheck = (file: any, dispatch: Dispatch<IAction>) => {
+    // check file type
+    if (!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
+        dispatch({
+            type: ActionType.Message,
+            payload: 'Only images are allowed.' as any
+        })
+        dispatch({
+            type: ActionType.UploadingDataEnd
+        })
+        return true;
+    }
+
+    // check file size (< 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        dispatch({
+            type: ActionType.Message,
+            payload: 'File must be less than 2MB.' as any
+        })
+        dispatch({
+            type: ActionType.UploadingDataEnd
+        })
+        return true;
+    }
 }

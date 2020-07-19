@@ -25,13 +25,17 @@ export const AboutPage = () => {
                     <div className="container">
                         <h2 className="display-4">About Page</h2>
                         <p className="lead">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque deleniti fugiat in perferendis qui quod recusandae ut vel! Dicta, libero!</p>
+                            This application is developed for an educational project and shows the result of developing
+                            a single page application using ReactJS, NodeJS and SQL technologies.</p>
                     </div>
                 </div>
                 <div className="jumbotron jumbotron-fluid">
                     <div className="container">
-                        <p className="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aperiam architecto autem cumque eius fugiat in, inventore,
-                            iste iusto laboriosam minima minus mollitia obcaecati placeat quam, quis sequi velit voluptatibus?</p>
+                        <p className="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur
+                            debitis explicabo perferendis sint vel. Ab accusantium, aliquam assumenda at consectetur
+                            consequatur deleniti deserunt distinctio earum eligendi eos fugiat fugit incidunt ipsam
+                            iusto nam nihil non nulla odio odit perferendis porro quaerat quis quisquam tempora tenetur
+                            totam veniam voluptate voluptatem voluptates?</p>
                     </div>
                 </div>
             </div>
