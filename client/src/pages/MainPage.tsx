@@ -27,13 +27,14 @@ export const MainPage: React.FC = () => {
     return (
         <div>
             <NavBar/>
-            <div className='container mt-7'>
+            <div className='container mt-7 con'>
                 {
                     state.userRole === 'admin'
-                        ? <div className="alert alert-secondary mt-3"><h4 className=" text-center">Admin Dashboard</h4>
+                        ?
+                        <div className="alert alert-primary mt-3"><h4 className=" text-center">Admin Dashboard</h4>
                         </div>
-                        : <h4 className="text-info mt-3">Follow your dreams...</h4>
-
+                        : <h4 className={`${state.theme === 'light' ? 'text-dark' : 'text-light'} mt-5`}>Follow your
+                            dreams...</h4>
                 }
                 <div className='row mt-3'>
                     {
@@ -46,7 +47,7 @@ export const MainPage: React.FC = () => {
                     }
                 </div>
             </div>
-            <Footer/>
+            <Footer toTop={true}/>
         </div>
     )
 }

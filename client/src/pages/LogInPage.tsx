@@ -64,7 +64,7 @@ export const LogInPage: React.FC = () => {
                        onChange={formHandler}/>
                 <div className="checkbox mb-3 mt-3">
                     <label>
-                        <Link to='/register'>New user? Registration</Link>
+                        <span style={{color: '#576574'}}>New user?  --{">"} </span><Link to='/register'> Registration</Link>
                     </label>
                 </div>
                 <button className="btn btn-lg btn-primary btn-block" type="submit" disabled={state.isLoading}>

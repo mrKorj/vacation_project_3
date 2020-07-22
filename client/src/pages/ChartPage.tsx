@@ -20,14 +20,14 @@ export const ChartPage = () => {
 
     return (
         <div>
-            <div className='container'>
+            <div className='container con'>
                 <NavBar/>
                 <div className='mt-7 mb-5'>
-                    <h1>Chart Page</h1>
+                    <h2 className={`${state.theme === 'light' ? 'text-dark' : 'text-light'} mb-3`}>Followers Chart</h2>
                     <Chart/>
                 </div>
             </div>
-            <Footer/>
+            <Footer toTop={false}/>
         </div>
     );
 };

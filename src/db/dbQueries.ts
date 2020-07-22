@@ -40,9 +40,6 @@ export async function logIn({userName, password}: IUser): Promise<number | null>
 }
 
 //------------------------------------ vacation queries ---------------------------------------
-// select *, ____ from V left join F on V.id = F.vacationId where F.userId = userId
-//           if(userId > o , true, false) as isFollowing
-
 //---- get list of all vacations
 export async function getVacation(userId: number): Promise<any> {
     const [followVacations]: any[] = await appDb.execute('SELECT vacations.*, follow FROM vacations LEFT JOIN  follow on vacations.id = follow.vacationId WHERE userId = ?', [userId])
@@ -102,9 +99,12 @@ export async function editVacation({id, name, description, fromDate, toDate, pic
 
 //---- delete vacation
 export async function deleteVacation(id: IVacation): Promise<boolean[]> {
+    const [url]: any = await appDb.execute('SELECT pictureUrl FROM vacations WHERE id = ?', [id])
     const [result]: any = await appDb.execute('DELETE FROM vacations WHERE id = ?', [id])
     const [result2]: any = await appDb.execute('DELETE FROM follow WHERE vacationId = ?', [id])
-    return [result.affectedRows > 0, result2.affectedRows > 0]
+    // console.log(url)
+    // [ BinaryRow { pictureUrl: './upload/london.jpg' } ]
+    return [result.affectedRows > 0, result2.affectedRows > 0, url[0]]
 }
 
 //------ Like vacation

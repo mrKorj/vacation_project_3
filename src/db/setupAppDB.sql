@@ -1,7 +1,7 @@
-CREATE DATABASE appDB;
+create DATABASE appDB;
 USE appDB;
 
-CREATE TABLE users
+create TABLE users
 (
     id               INT          NOT NULL AUTO_INCREMENT,
     userName         VARCHAR(20)  NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE users
     INDEX userName (userName)
 );
 
-CREATE TABLE vacations
+create TABLE vacations
 (
     id             INT          NOT NULL AUTO_INCREMENT,
     name           VARCHAR(30)  NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE vacations
     INDEX id (id)
 );
 
-CREATE TABLE follow
+create TABLE follow
 (
     id         INT NOT NULL AUTO_INCREMENT,
     vacationId INT NOT NULL,
@@ -39,16 +39,18 @@ CREATE TABLE follow
     INDEX vacationId (vacationId)
 );
 
-INSERT INTO users (userName, firstName, lastName, password)
-VALUES ('admin', 'administrator', 'supervisor', '');
+insert into users (userName, firstName, lastName, password)
+values ('admin', 'administrator', 'supervisor', '');
 
-INSERT INTO vacations (name, description, fromDate, toDate, pictureUrl, price)
-VALUES ('Ski in Alps', 'Family Ski vacation in Alps', '2020-12-25', '2021-01-10', './upload/ski.jpg', 2599),
-       ('Flying in Australia', 'Vacation in Australia', '2020-08-12', '2020-08-18', './upload/sky.jpg', 1300),
-       ('Disneyland California', 'Vacation in Disneyland California', '2020-09-12', '2020-09-18','./upload/disneyland.jpg', 1999),
-       ('Norway Adventures', 'Vacation in Norway', '2021-06-10', '2021-06-15', './upload/norway-adventures.jpg', 1200),
-       ('Sidney', 'Incredible trip to Sidney', '2020-11-02', '2020-11-12', './upload/sidney.jpg', 1699),
-       ('Switzerland', 'Vacation in Switzerland', '2021-07-15', '2021-07-21', './upload/Switzerland.jpg', 1250),
-       ('Italy Venice', 'Vacation in Italy Venice', '2020-09-12', '2020-09-18', './upload/italy.jpg', 599),
-       ('London', 'Vacation in London', '2020-10-05', '2020-10-10', './upload/london.jpg', 899),
-       ('France Paris', 'Vacation in France Paris', '2020-08-18', '2020-08-22', './upload/paris.jpg', 650);
+insert into vacations (name, description, fromDate, toDate, pictureUrl, price)
+values ('Ski in Austria', 'Family Ski vacation in Austria', '2020-12-25', '2021-01-10', 'upload/ski.jpg', 2599),
+       ('Sidney', 'Incredible trip to Sidney', '2020-11-02', '2020-11-12', 'upload/sidney.jpg', 1699),
+       ('Flying in Alps', 'Vacation in Alps', '2020-08-12', '2020-08-18', 'upload/sky.jpg', 1300),
+       ('Tokyo Japan', 'Vacation in Tokyo Japan', '2020-08-01', '2020-08-08', 'upload/tokyo.jpg', 1100),
+       ('Norway Adventures', 'Vacation in Norway', '2021-06-10', '2021-06-15', 'upload/norway-adventures.jpg', 1200),
+       ('Switzerland', 'Vacation in Switzerland', '2021-07-15', '2021-07-21', 'upload/Switzerland.jpg', 1250),
+       ('Disneyland California', 'Vacation in Disneyland California', '2020-09-12', '2020-09-18','upload/disneyland.jpg', 1999),
+       ('Italy Venice', 'Vacation in Italy Venice', '2020-09-12', '2020-09-18', 'upload/italy.jpg', 599),
+       ('Krakow Poland', 'Vacation in Krakow Poland', '2020-11-12', '2020-11-18', 'upload/Krakow.jpg', 450),
+       ('London', 'Vacation in London', '2020-10-05', '2020-10-10', 'upload/london.jpg', 899),
+       ('France Paris', 'Vacation in France Paris', '2020-08-18', '2020-08-22', 'upload/paris.jpg', 650);

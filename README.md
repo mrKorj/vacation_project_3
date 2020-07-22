@@ -1,19 +1,28 @@
-# VacationCard App
+# Vacation App
 This is learning project for Full Stack Course.
 
 ## Instructions
-The server requires env variable SECRET.
 
 * Run script, ./src/db/setupAppDB.sql.
 * Type in terminal `npm i`.
 
 Set secret key for JWT token.
-* Windows: `SET SECRET=your-secret`, or leave the defaults: "secret".
-* Linux/Mac: `EXPORT SECRET=your-secret`, or leave the defaults: "secret".
+* Windows: `SET SECRET=your-secret`.
+* Linux/Mac: `EXPORT SECRET=your-secret`.
+
+defaults: SECRET = "secret".
 
 Set PORT for server.
-* Windows: `SET PORT=your-port`, or leave the defaults: "4000".
-* Linux/Mac: `EXPORT PORT=your-port`, or leave the defaults: "4000".
+* Windows: `SET PORT=your-port`.
+* Linux/Mac: `EXPORT PORT=your-port`.
+
+defaults: PORT = 4000.
+
+Set admin password for DB.
+* Windows: `SET adminPassword=your-passwoed`.
+* Linux/Mac: `EXPORT adminPassword=your-password`.
+
+defaults: adminPassword = "12345".
 
 Start the app
 * Type `npm run start` to start both server and client.

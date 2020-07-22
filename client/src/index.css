@@ -1,8 +1,40 @@
-/*body {*/
-/*    background-color: #f5f5f5 !important;*/
-/*}*/
+body::before {
+    content: "";
+    z-index: -1;
+    position: fixed;
+    left: inherit;
+    top: inherit;
+    width: inherit;
+    height: inherit;
+    background-image: inherit;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    filter: blur(4px) opacity(.5);
+}
+
+body {
+    background-color: white;
+    background-image: url("/img/palm.jpg");
+    background-size: 0 0;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
 .alert {
     margin-bottom: 0 !important;
+}
+.con {
+    min-height: calc(100vh - 11rem - 4rem);
+}
+
+p.card-text {
+    margin-bottom: 0.3rem !important;
 }
 
 .form-signin {
@@ -29,7 +61,7 @@
 }
 
 .mt-7 {
-    margin-top: 5rem;
+    margin-top: 6rem;
 }
 
 .mb-7 {
@@ -46,7 +78,7 @@
 }
 
 .follow-card {
-    background: radial-gradient(circle, #f8f9fa, #e7f0f8);
+    background: radial-gradient(circle, #f8f9fa, #b5d8f6);
     /*background-color: #f4f4f4;*/
 }
 
@@ -54,13 +86,26 @@
     background-color: #ffffff;
 }
 
+.social-about {
+    font-size: 1.15rem;
+}
+
+.social-about i {
+    color: #fff;
+    background: -webkit-linear-gradient(#87cafd, #007bff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
 .fa-heart:hover {
     color: red;
 }
 
 .footer {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: .5rem;
     background-color: white;
 }
 
@@ -72,6 +117,16 @@
 
 .footer-dark {
     background-color: #40407a;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: .5rem;
+}
+
+@media screen and (max-width: 620px) {
+    .footer-mobile {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between !important;
+    }
 }

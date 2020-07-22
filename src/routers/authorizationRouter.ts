@@ -10,7 +10,6 @@ const router = Router()
 //----- register new user
 router.post('/register', async (req, res) => {
     try {
-        // TODO: userName declaration !!!
         let {userName, firstName, lastName, password} = req.body as IUser
         userName = userName.toLowerCase()
         const {error} = newUserSchema.validate({userName, firstName, lastName, password})
@@ -41,7 +40,6 @@ router.post('/register', async (req, res) => {
 //--------- logIn
 router.post('/login', async (req, res) => {
     try {
-        // TODO: userName declaration !!!
         let {userName, password} = req.body as IUser
         userName = userName.toLowerCase()
         const {error} = logInSchema.validate({userName, password})

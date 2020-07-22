@@ -2,6 +2,7 @@ import express from 'express'
 import expressJwt from 'express-jwt'
 import socketIo from 'socket.io'
 import http from 'http'
+import path from 'path'
 import cors from 'cors'
 import fileUpload from 'express-fileupload'
 import {vacationRouter} from "./routers/vacationRouter"
@@ -9,12 +10,11 @@ import {authorizationRouter} from "./routers/authorizationRouter"
 import {generateHashPassForAdmin} from "./db/dbQueries";
 import {authenticationRouter} from "./routers/authenticationRouter";
 
-const PORT = process.env.PORT || 4000
+export const rootPath = path.join(__dirname, '../')
+const {PORT = 4000} = process.env;
 export const {SECRET = 'secret'} = process.env;
 export const {adminPassword = '12345'} = process.env
 export const adminSocket = {id: '', socket: {}}
-
-// TODO: global variable file
 
 const app = express()
 const server = http.createServer(app)

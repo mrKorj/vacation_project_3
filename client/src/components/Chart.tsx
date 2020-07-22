@@ -40,7 +40,7 @@ export const Chart: React.FC = () => {
     }
 
     return (
-        <div>
+        <div className="mb-7">
             <CanvasJSChart options={options}/>
         </div>
     );

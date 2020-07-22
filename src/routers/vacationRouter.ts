@@ -1,8 +1,9 @@
-import {Router} from 'express'
+import {Router} from 'express';
+import fs from 'fs';
 import {addVacation, deleteVacation, editVacation, getCountFollowers, getVacation, likeVacation, markFollow} from "../db/dbQueries"
 import {IVacation} from "../models/vacationModel";
 import {vacationSchema} from "../schemas/vacationSchema";
-import {adminSocket} from "../server";
+import {adminSocket, rootPath} from "../server";
 
 const router = Router()
 
@@ -66,13 +67,13 @@ router.post('/add', (req, res) => {
         const sampleFile = req.files.sampleFile
 
         // @ts-ignore
-        sampleFile.mv('./upload/' + sampleFile.name, async function (err) {
+        sampleFile.mv('upload/' + sampleFile.name, async function (err) {
             if (err) {
                 return res.status(500).send({err, message: 'mv file error'})
             }
 
             // @ts-ignore
-            const picUrl = `./upload/${sampleFile.name}`
+            const picUrl = `upload/${sampleFile.name}`
 
             const {error} = vacationSchema.validate({name, description, fromDate, toDate, picUrl, price})
             if (error) {
@@ -126,13 +127,13 @@ router.put('/edit', async (req, res) => {
         const sampleFile = req.files.sampleFile
 
         // @ts-ignore
-        sampleFile.mv('./upload/' + sampleFile.name, async function (err) {
+        sampleFile.mv('upload/' + sampleFile.name, async function (err) {
             if (err) {
                 return res.status(500).send({err, message: 'mv file error'})
             }
 
             // @ts-ignore
-            const picUrl = `./upload/${sampleFile.name}`
+            const picUrl = `upload/${sampleFile.name}`
 
             const editedVacation = await editVacation({id, name, description, fromDate, picUrl, toDate, price} as IVacation)
 
@@ -159,11 +160,17 @@ router.delete('/delete', async (req, res) => {
 
         const {vacationId} = req.body
         const result = await deleteVacation(vacationId)
+        const {pictureUrl}: any = result[2]
 
         if (result[0]) {
             // @ts-ignore
             adminSocket.socket.broadcast.emit('deleteAction', vacationId)
         }
+
+        fs.unlink(`${rootPath}${pictureUrl}`, (err) => {
+            if (err) console.log(err);
+            console.log(`${pictureUrl} was deleted`);
+        });
 
         res.send({message: 'vacation deleted successfully', result})
     } catch (e) {

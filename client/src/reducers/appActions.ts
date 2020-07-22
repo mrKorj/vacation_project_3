@@ -247,7 +247,7 @@ export const ChangeThemeAction = (dispatch: Dispatch<IAction>) => {
 
 const fileSizeCheck = (file: any, dispatch: Dispatch<IAction>) => {
     // check file type
-    if (!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
+    if (file && !['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
         dispatch({
             type: ActionType.Message,
             payload: 'Only images are allowed.' as any
@@ -259,7 +259,7 @@ const fileSizeCheck = (file: any, dispatch: Dispatch<IAction>) => {
     }
 
     // check file size (< 2MB)
-    if (file.size > 2 * 1024 * 1024) {
+    if (file && file.size > 2 * 1024 * 1024) {
         dispatch({
             type: ActionType.Message,
             payload: 'File must be less than 2MB.' as any
